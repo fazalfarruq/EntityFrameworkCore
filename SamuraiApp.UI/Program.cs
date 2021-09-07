@@ -12,10 +12,10 @@ namespace SamuraiApp.UI
 
         private static void Main(string[] args)
         {
-            _context.Database.EnsureCreated();
-            GetSamurais("Before Add:");
-            AddSamurai("Padma", "Dolly", "Rajeev");
-            GetSamurais("After Add:");
+            //_context.Database.EnsureCreated();
+            GetSamurais("");
+            //AddSamurai("Padma", "Dolly", "Rajeev");
+            //GetSamurais("After Add:");
             Console.Write("Press any key...");
             Console.ReadKey();
         }

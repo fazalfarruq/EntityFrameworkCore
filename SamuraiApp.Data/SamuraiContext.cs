@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SamuraiApp.Domain;
 
 namespace SamuraiApp.Data
@@ -12,8 +14,14 @@ namespace SamuraiApp.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                "Server=tcp:nsdfazaltest.database.windows.net,1433;Initial Catalog=SamuraiAppData;Persist Security Info=False;" +
-                "User ID=ffarruq;Password=Y@hoo89a!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                    "Server=tcp:nsdfazaltest.database.windows.net,1433;Initial Catalog=SamuraiAppData;Persist Security Info=False;" +
+                    "User ID=ffarruq;Password=Y@hoo89a!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")
+                .LogTo(Console.WriteLine, new[]
+                    {
+                        DbLoggerCategory.Database.Command.Name // logs the query send to the database
+                    },
+                    LogLevel.Information // logs just the query information .. this is one more filter you can pass to make it the log less verbose
+                ).EnableSensitiveDataLogging(); // this will output the input parameters for inserts and updates;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
