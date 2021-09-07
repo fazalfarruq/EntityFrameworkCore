@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using SamuraiApp.Data;
 using SamuraiApp.Domain;
 
@@ -13,21 +14,24 @@ namespace SamuraiApp.UI
         {
             _context.Database.EnsureCreated();
             GetSamurais("Before Add:");
-            AddSamurai();
+            AddSamurai("Padma", "Dolly", "Rajeev");
             GetSamurais("After Add:");
             Console.Write("Press any key...");
             Console.ReadKey();
         }
 
-        private static void AddSamurai()
+        private static void AddSamurai(params string[] names)
         {
-            var samurai = new Samurai { Name = "Trevor" };
-            _context.Samurais.Add(samurai);
+            foreach (var name in names)
+            {
+                _context.Samurais.Add(new Samurai{Name = name});
+            }
+            
             _context.SaveChanges();
         }
         private static void GetSamurais(string text)
         {
-            var samurais = _context.Samurais.ToList();
+            var samurais = _context.Samurais.TagWith("ConsoleApp.Program.GetSamurais method").ToList();
             Console.WriteLine($"{text}: Samurai count is {samurais.Count}");
             foreach (var samurai in samurais)
             {
