@@ -17,7 +17,7 @@ namespace SamuraiApp.UI
             //GetSamurais("");
             //QueryAndUpdateBattles_Disconnected();
             //GetSamurais("After Add:");
-            AddQuoteToExistingSamuraiNotTracked(2);
+            ExplicitLoadQuotesWithInclude();
             Console.Write("Press any key...");
             Console.ReadKey();
         }
@@ -115,6 +115,7 @@ namespace SamuraiApp.UI
                 newContext.SaveChanges();
             }
         }
+
         private static void Simpler_AddQuoteToExistingSamuraiNotTracked(int samuraiId)
         {
             var quote = new Quote { Text = "Thanks for dinner!", SamuraiId = samuraiId };
@@ -122,5 +123,77 @@ namespace SamuraiApp.UI
             newContext.Quotes.Add(quote);
             newContext.SaveChanges();
         }
+        private static void ProjectSomeProperties()
+        {
+            var someProperties = _context.Samurais.Select(s => new { s.Id, s.Name }).ToList();
+            var idAndNames = _context.Samurais.Select(s => new IdAndName(s.Id, s.Name)).ToList();
+        }
+        public struct IdAndName
+        {
+            public IdAndName(int id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
+            public int Id;
+            public string Name;
+
+        }
+        private static void ProjectSamuraisWithQuotes()
+        {
+            //var somePropsWithQuotes = _context.Samurais
+            //    .Select(s => new { s.Id, s.Name, NumberOfQuotes=s.Quotes.Count })
+            //    .ToList();
+            //var somePropsWithQuotes = _context.Samurais
+            //.Select(s => new { s.Id, s.Name, 
+            //                   HappyQuotes = s.Quotes.Where(q=>q.Text.Contains("happy")) })
+            //.ToList();
+            var samuraisAndQuotes = _context.Samurais
+                .Select(s => new
+                {
+                    Samurai = s,
+                    HappyQuotes = s.Quotes.Where(q => q.Text.Contains("happy"))
+                })
+                .ToList();
+        }
+
+        private static void ExplicitLoadQuotes()
+        {
+            //make sure there's a horse in the DB, then clear the context's change tracker
+            //_context.Set<Horse>().Add(new Horse { SamuraiId = 1, Name = "Mr. Ed" });
+            //_context.SaveChanges();
+            //_context.ChangeTracker.Clear();
+            //-------------------
+            var samurai = _context.Samurais.Find(1);
+            _context.Entry(samurai).Collection(s => s.Quotes).Load();
+            _context.Entry(samurai).Reference(s => s.Horse).Load();
+            Console.ReadLine();
+        }
+
+        private static void ExplicitLoadQuotesWithInclude()
+        {
+            //make sure there's a horse in the DB, then clear the context's change tracker
+            //_context.Set<Horse>().Add(new Horse { SamuraiId = 1, Name = "Mr. Ed" });
+            //_context.SaveChanges();
+            //_context.ChangeTracker.Clear();
+            //-------------------
+            var samurai = _context.Samurais.Include(s => s.Quotes).FirstOrDefault(s => s.Id == 1);
+            Console.ReadLine();
+
+        }
+
+        private static void AddAHorse()
+        {
+            //make sure there's a horse in the DB, then clear the context's change tracker
+            var horse = new Horse { Name = "TimTom", SamuraiId = 2 };
+            _context.Add(horse);
+            _context.SaveChanges();
+            //-------------------
+            //var samurai = _context.Samurais.Find(1);
+            //_context.Entry(samurai).Collection(s => s.Quotes).Load();
+            //_context.Entry(samurai).Reference(s => s.Horse).Load();
+        }
     }
+
+
 }
