@@ -165,8 +165,8 @@ namespace SamuraiApp.UI
             //_context.ChangeTracker.Clear();
             //-------------------
             var samurai = _context.Samurais.Find(1);
-            _context.Entry(samurai).Collection(s => s.Quotes).Load();
-            _context.Entry(samurai).Reference(s => s.Horse).Load();
+            _context.Entry(samurai).Collection(s => s.Quotes).Load();  // this loads the related entities --> parent and children  (this is for a collection)
+            _context.Entry(samurai).Reference(s => s.Horse).Load();   // this loads the related entities --> parent and children  (this is for a reference)
             Console.ReadLine();
         }
 
