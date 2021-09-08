@@ -193,6 +193,20 @@ namespace SamuraiApp.UI
             //_context.Entry(samurai).Collection(s => s.Quotes).Load();
             //_context.Entry(samurai).Reference(s => s.Horse).Load();
         }
+
+
+        private static void ContextEntryMethodToEagerlyLoad()
+        {
+            //make sure there's a horse in the DB, then clear the context's change tracker
+            //_context.Set<Horse>().Add(new Horse { SamuraiId = 1, Name = "Mr. Ed" });
+            //_context.SaveChanges();
+            //_context.ChangeTracker.Clear();
+            //-------------------
+            var samurai = _context.Samurais.Find(1);
+            _context.Entry(samurai).Collection(s => s.Quotes).Load();  // this loads the related entities --> parent and children  (this is for a collection)
+            _context.Entry(samurai).Reference(s => s.Horse).Load();   // this loads the related entities --> parent and children  (this is for a reference)
+            Console.ReadLine();
+        }
     }
 
 
