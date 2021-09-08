@@ -17,7 +17,7 @@ namespace SamuraiApp.UI
             //GetSamurais("");
             //QueryAndUpdateBattles_Disconnected();
             //GetSamurais("After Add:");
-            Simpler_AddQuoteToExistingSamuraiNotTracked(1);
+            AddQuoteToExistingSamuraiNotTracked(2);
             Console.Write("Press any key...");
             Console.ReadKey();
         }
