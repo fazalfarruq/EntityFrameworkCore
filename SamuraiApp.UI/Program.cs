@@ -15,8 +15,9 @@ namespace SamuraiApp.UI
         {
             //_context.Database.EnsureCreated();
             //GetSamurais("");
-            QueryAndUpdateBattles_Disconnected();
-            GetSamurais("After Add:");
+            //QueryAndUpdateBattles_Disconnected();
+            //GetSamurais("After Add:");
+            Simpler_AddQuoteToExistingSamuraiNotTracked(1);
             Console.Write("Press any key...");
             Console.ReadKey();
         }
@@ -64,6 +65,62 @@ namespace SamuraiApp.UI
                 context2.UpdateRange(disconnectedBattles);
                 context2.SaveChanges();
             }
+        }
+
+        private static void InsertNewSamuraiWithAQuote()
+        {
+            var samurai = new Samurai
+            {
+                Name = "Kambei Shimada",
+                Quotes = new List<Quote>
+        {
+          new Quote { Text = "I've come to save you" }
+        }
+            };
+            _context.Samurais.Add(samurai);
+            _context.SaveChanges();
+        }
+        private static void InsertNewSamuraiWithManyQuotes()
+        {
+            var samurai = new Samurai
+            {
+                Name = "Kyūzō",
+                Quotes = new List<Quote> {
+            new Quote {Text = "Watch out for my sharp sword!"},
+            new Quote {Text="I told you to watch out for the sharp sword! Oh well!" }
+        }
+            };
+            _context.Samurais.Add(samurai);
+            _context.SaveChanges();
+        }
+        private static void AddQuoteToExistingSamuraiWhileTracked()
+        {
+            var samurai = _context.Samurais.FirstOrDefault();
+            samurai.Quotes.Add(new Quote
+            {
+                Text = "I bet you're happy that I've saved you!"
+            });
+            _context.SaveChanges();
+        }
+        private static void AddQuoteToExistingSamuraiNotTracked(int samuraiId)
+        {
+            var samurai = _context.Samurais.Find(samuraiId);
+            samurai.Quotes.Add(new Quote
+            {
+                Text = "Now that I saved you, will you feed me dinner?"
+            });
+            using (var newContext = new SamuraiContext())
+            {
+                newContext.Samurais.Attach(samurai);
+                newContext.SaveChanges();
+            }
+        }
+        private static void Simpler_AddQuoteToExistingSamuraiNotTracked(int samuraiId)
+        {
+            var quote = new Quote { Text = "Thanks for dinner!", SamuraiId = samuraiId };
+            using var newContext = new SamuraiContext();
+            newContext.Quotes.Add(quote);
+            newContext.SaveChanges();
         }
     }
 }
