@@ -207,6 +207,19 @@ namespace SamuraiApp.UI
             _context.Entry(samurai).Reference(s => s.Horse).Load();   // this loads the related entities --> parent and children  (this is for a reference)
             Console.ReadLine();
         }
+
+        private static void ModifyingRelatedDataWhenNotTracked()
+        {
+            var samurai = _context.Samurais.Include(s => s.Quotes)
+                .FirstOrDefault(s => s.Id == 2);
+            var quote = samurai.Quotes[0];
+            quote.Text += "Did you hear that again?";
+
+            using var newContext = new SamuraiContext();
+            //newContext.Quotes.Update(quote); // this will update all the quotes attached to the samurai
+            newContext.Entry(quote).State = EntityState.Modified; // this will only modify the given quote but not all quotes in a disconnected scenerario
+            newContext.SaveChanges();
+        }
     }
 
 
