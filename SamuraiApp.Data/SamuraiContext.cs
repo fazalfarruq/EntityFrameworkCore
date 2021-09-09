@@ -35,6 +35,8 @@ namespace SamuraiApp.Data
                      bs => bs.HasOne<Samurai>().WithMany())
                  .Property(bs => bs.DateJoined)
                  .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Horse>().ToTable("Horses"); // this is explicitly name the table.. specially when you dont have a DbSet<T>. By convention when you dont have DbSet<T>, EF will name the table by the type name.
         }
     }
 }
