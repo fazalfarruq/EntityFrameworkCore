@@ -17,7 +17,7 @@ namespace SamuraiApp.UI
             //GetSamurais("");
             //QueryAndUpdateBattles_Disconnected();
             //GetSamurais("After Add:");
-            ExplicitLoadQuotesWithInclude();
+            RemoveSamuraiFromABattle();
             Console.Write("Press any key...");
             Console.ReadKey();
         }
@@ -220,7 +220,39 @@ namespace SamuraiApp.UI
             newContext.Entry(quote).State = EntityState.Modified; // this will only modify the given quote but not all quotes in a disconnected scenerario
             newContext.SaveChanges();
         }
-    }
 
+        private static void AddingNewSamuraiToAnExistingBattle()
+        {
+            var battle = _context.Battles.FirstOrDefault();
+            battle.Samurais.Add(new Samurai { Name = "Fazal" });
+            _context.SaveChanges();
+        }
+
+        private static void ReturnBattleWithSamurais()
+        {
+            var battle = _context.Battles.Include(b => b.Samurais).FirstOrDefault();
+        }
+
+        private static void AddAllSamuraisToAllBattles()
+        {
+            var allbattles = _context.Battles.Include(b => b.Samurais).ToList();
+            var allSamurais = _context.Samurais.ToList();
+            foreach (var battle in allbattles)
+            {
+                battle.Samurais.AddRange(allSamurais);
+            }
+            _context.SaveChanges();
+        }
+        private static void RemoveSamuraiFromABattle()
+        {
+            var battleWithSamurai = _context.Battles
+                .Include(b => b.Samurais.Where(s => s.Id == 12))
+                .Single(s => s.BattleId == 1);
+            var samurai = battleWithSamurai.Samurais[0];
+            battleWithSamurai.Samurais.Remove(samurai);
+            _context.SaveChanges();
+        }
+    }
+      
 
 }
