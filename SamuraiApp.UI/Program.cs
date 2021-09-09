@@ -17,7 +17,7 @@ namespace SamuraiApp.UI
             //GetSamurais("");
             //QueryAndUpdateBattles_Disconnected();
             //GetSamurais("After Add:");
-            RemoveSamuraiFromABattle();
+            AddNewHorseToSamuraiUsingId();
             Console.Write("Press any key...");
             Console.ReadKey();
         }
@@ -252,7 +252,27 @@ namespace SamuraiApp.UI
             battleWithSamurai.Samurais.Remove(samurai);
             _context.SaveChanges();
         }
-    }
-      
 
+        private static void AddNewSamuraiWithHorse()
+        {
+            var samurai = new Samurai { Name = "Jina Ujichika" };
+            samurai.Horse = new Horse { Name = "Silver" };
+            _context.Samurais.Add(samurai);
+            _context.SaveChanges();
+        }
+
+        private static void AddNewHorseToSamuraiUsingId()
+        {
+            var horse = new Horse { Name = "Scout", SamuraiId = 4 };
+            _context.Add(horse);
+            _context.SaveChanges();
+        }
+
+
+        private static void GetHorseWithSamurai()
+        {
+            var horse = _context.Set<Horse>().Find(2); // use the set method on dbContext if there is no DbSet<T>
+
+        }
+    }
 }
